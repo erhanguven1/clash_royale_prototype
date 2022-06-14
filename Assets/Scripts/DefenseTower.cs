@@ -4,26 +4,35 @@ using UnityEngine;
 using Mirror;
 using System;
 
-[System.Serializable]
-internal class DefenseTowerStats
+public class DefenseTower : NetworkBehaviour
 {
-
-    [SerializeField] [SyncVar] internal int health;
+    [SyncVar] public int owner;
+    [SerializeField] [SyncVar] internal int maxHealth;
+    [SerializeField] [SyncVar(hook = nameof(ReceiveHealthFromServer))] internal int health;
+    [SerializeField] internal HealthUI healthUI;
 
     internal void DecreaseHealth(int _dmg)
     {
         health -= _dmg;
         if (health <= 0)
         {
-
+            health = 0;
+            gameObject.SetActive(false);
+            Destroy(gameObject, .1f);
         }
     }
-}
 
-public class DefenseTower : NetworkBehaviour
-{
-    [SyncVar] public int owner;
-    [SerializeField] internal DefenseTowerStats stats;
+    public void ReceiveHealthFromServer(int _old, int _new)
+    {
+        healthUI.UpdateHealth(_new, maxHealth > 0 ? maxHealth : 1);
+    }
+
+    public override void OnStartServer()
+    {
+        base.OnStartServer();
+        maxHealth = 100;
+        health = 100;
+    }
 
     public void SetTowerPosition(int towerTransformIndex)
     {
@@ -48,15 +57,10 @@ public class DefenseTower : NetworkBehaviour
         }
     }
 
-    internal void SetStats(DefenseTowerStats _stats)
-    {
-        stats = _stats;
-    }
-
     [Server]
     internal void TakeDamage(int _dmg)
     {
-        stats.DecreaseHealth(_dmg);
+        DecreaseHealth(_dmg);
     }
 
     internal bool IsEnemyWith(Minion _minion)

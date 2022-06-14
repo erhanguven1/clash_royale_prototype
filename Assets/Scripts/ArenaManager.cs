@@ -12,6 +12,7 @@ public class ArenaManager : Instancable<ArenaManager>
     public void SetArenaRotation(int playerId)
     {
         transform.eulerAngles = Vector3.up * (playerId == 0 ? 0 : 180);
+        transform.localScale = new Vector3(2 * (playerId == 0 ? 1 : -1), 1, 1);
 
         arenaForward = playerId == 0 ? Vector3.forward : Vector3.back;
 

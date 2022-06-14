@@ -6,10 +6,18 @@ using Mirror;
 public class Player : NetworkBehaviour
 {
     [SerializeField] internal int id;
+    [SerializeField] private int mana;
 
-    public override void OnStartServer()
+    public int cardsInHandCount;
+    public int cardsInDrawPileCount;
+
+    public int GetMana()
     {
-        base.OnStartServer();
+        return mana;
+    }
+    public void SetMana(int _mana)
+    {
+        mana = _mana;
     }
 
     [Server]
@@ -17,6 +25,7 @@ public class Player : NetworkBehaviour
     {
         id = _id;
         SetIDOnClients(id);
+        StartCoroutine(Timer());
     }
 
     [ClientRpc]
@@ -32,6 +41,9 @@ public class Player : NetworkBehaviour
         {
             MatchManager.Instance.myPlayer = this;
             ArenaManager.Instance.SetArenaRotation(id);
+
+            DrawManager.Instance.CreateTestCards();
+
             print("has authority!");
         }
         else
@@ -39,5 +51,48 @@ public class Player : NetworkBehaviour
             MatchManager.Instance.opponentPlayer = this;
             print("no authority!");
         }
+    }
+
+    //Add 1 mana every second (SERVER)
+    public IEnumerator Timer()
+    {
+        while (true)
+        {
+            mana += 1;
+            yield return new WaitForSeconds(1);
+            mana += 1;
+            yield return new WaitForSeconds(1);
+            TryDrawCard();
+        }
+    }
+
+    [Server]
+    private void TryDrawCard()
+    {
+        if (cardsInDrawPileCount > 0 && cardsInHandCount < 5)
+        {
+            RPCDrawCard();
+        }
+    }
+
+    [ClientRpc]
+    private void RPCDrawCard()
+    {
+        if (hasAuthority)
+        {
+            DrawManager.Instance.DrawCard();
+        }
+    }
+
+    [Command(requiresAuthority = false)]
+    public void UpdateDeckCardCount(int delta)
+    {
+        cardsInDrawPileCount += delta;
+    }
+
+    [Command(requiresAuthority = false)]
+    public void UpdateHandCardCount(int delta)
+    {
+        cardsInHandCount += delta;
     }
 }

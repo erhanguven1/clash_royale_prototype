@@ -45,6 +45,7 @@ public abstract class Minion : NetworkBehaviour
     [SerializeField] internal int owner;
 
     [SerializeField] internal MinionStats minionStats;
+    [SerializeField] internal MinionAnimationController animationController;
 
     private float attackCountdown;
     [SerializeField] internal bool isAttacking;
@@ -59,6 +60,7 @@ public abstract class Minion : NetworkBehaviour
         if (GetComponent<NetworkIdentity>().isClient)
         {
             Destroy(GetComponent<Rigidbody>());
+            transform.GetChild(0).eulerAngles = new Vector3(0, owner * 180, 0);
         }
     }
 
@@ -106,6 +108,7 @@ public abstract class Minion : NetworkBehaviour
             if (targetMinion == minion)
             {
                 isAttacking = false;
+                animationController.StartWalking();
                 ChooseTargetMinion();
             }
         }
@@ -142,6 +145,8 @@ public abstract class Minion : NetworkBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
+                    animationController.StartAttacking();
+
                     attackTarget = AttackTarget.Minion;
                 }
             }
@@ -193,6 +198,8 @@ public abstract class Minion : NetworkBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
+                    animationController.StartAttacking();
+
                     attackTarget = AttackTarget.Tower;
                 }
             }
@@ -206,6 +213,8 @@ public abstract class Minion : NetworkBehaviour
         if (targetMinions.Count == 0)
         {
             isAttacking = false;
+            animationController.StartWalking();
+
         }
         else
         {

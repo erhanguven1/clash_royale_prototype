@@ -56,9 +56,6 @@ public class MinionFactory : Instancable<MinionFactory>
 
         minion.transform.position = spawnPosition;
 
-        //Spawn minion's graphic inside of the minion (parent)
-        Instantiate(graphic, minion.transform);
-
         Minion minionComponent = null;
 
         switch (minionType)
@@ -72,6 +69,11 @@ public class MinionFactory : Instancable<MinionFactory>
             default:
                 break;
         }
+
+        //Spawn minion's graphic inside of the minion (parent)
+        var minionGraphic = Instantiate(graphic, minion.transform).transform.GetChild(0);
+        minionComponent.animationController = minionGraphic.GetComponent<MinionAnimationController>();
+        minionGraphic.transform.eulerAngles = new Vector3(0, owner * 180, 0);
 
         minionComponent.SetMinionData(minionDictionary[minionType]);
         minionComponent.owner = owner;
