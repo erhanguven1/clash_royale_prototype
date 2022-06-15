@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Tower : MonoBehaviour
+public class TowerBehaviour : MonoBehaviour
 {
     private float attackCountdown = 2;
     [SerializeField] internal int attackInterval;
@@ -104,7 +104,7 @@ public class Tower : MonoBehaviour
                         AttackMinion(targetMinion);
                         targetMinion = null;
                         isAttacking = false;
-                        targetMinions.Clear();
+                        targetMinions.RemoveAt(0);
                         ChooseTargetMinion();
                     }
                     else
