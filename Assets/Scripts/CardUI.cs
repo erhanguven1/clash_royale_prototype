@@ -13,7 +13,7 @@ public class CardUI : Instancable<CardUI>, IDragHandler, IBeginDragHandler, IEnd
 
     private void Start()
     {
-        canvas = FindObjectOfType<Canvas>();
+        canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
     }
 
     public void SetCard(Card _card)

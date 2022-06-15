@@ -11,6 +11,8 @@ public class DefenseTower : NetworkBehaviour
     [SerializeField] [SyncVar(hook = nameof(ReceiveHealthFromServer))] internal int health;
     [SerializeField] internal HealthUI healthUI;
 
+    public Minion targetMinion;
+
     internal void DecreaseHealth(int _dmg)
     {
         health -= _dmg;
@@ -66,5 +68,11 @@ public class DefenseTower : NetworkBehaviour
     internal bool IsEnemyWith(Minion _minion)
     {
         return owner != _minion.owner;
+    }
+
+    [Server]
+    public void Attack(Minion attackTo)
+    {
+        attackTo.TakeDamage(80);
     }
 }
