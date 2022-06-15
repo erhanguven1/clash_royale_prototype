@@ -24,11 +24,11 @@ public class MinionAnimationController : NetworkBehaviour
     public void StartAttacking()
     {
         animator.SetTrigger("Attack");
-        // StartWalkingRPC();
+        StartAttackingRPC();
     }
 
     [ClientRpc]
-    private void StartAttackingRPC()
+    private void StartAttackingRPC() //Animations doesn't work on client only on server.
     {
         animator.SetTrigger("Attack");
     }
