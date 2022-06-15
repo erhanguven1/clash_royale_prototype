@@ -233,6 +233,7 @@ public class Minion : NetworkBehaviour
             targetMinion = orderedTargets.First();
             isAttacking = true;
             animationController.StartAttacking();
+            attackTarget = AttackTarget.Minion;
         }
     }
 
