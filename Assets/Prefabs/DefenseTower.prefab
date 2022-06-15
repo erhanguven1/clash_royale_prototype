@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4519537120983509927}
   - component: {fileID: 4519537120983509928}
   - component: {fileID: 4519537120983509923}
+  - component: {fileID: -3857937633131454550}
   m_Layer: 0
   m_Name: DefenseTower
   m_TagString: Tower
@@ -67,6 +68,7 @@ MonoBehaviour:
   maxHealth: 0
   health: 0
   healthUI: {fileID: 8577669804044677306}
+  targetMinion: {fileID: 0}
 --- !u!114 &4519537120983509923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,6 +86,22 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 41311d88ab0ca6f40bc17c6d41d61f19
   hasSpawned: 0
+--- !u!114 &-3857937633131454550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4519537120983509929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db11a72b91ce8a049a9da9a8253fabc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attackInterval: 2
+  isAttacking: 0
+  attackTarget: 0
+  targetMinion: {fileID: 0}
 --- !u!1 &6834186715086848248
 GameObject:
   m_ObjectHideFlags: 0
