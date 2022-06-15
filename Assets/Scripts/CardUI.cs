@@ -44,6 +44,11 @@ public class CardUI : Instancable<CardUI>, IDragHandler, IBeginDragHandler, IEnd
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (MatchManager.Instance.myPlayer.GetMana() - card.mana <= 0)
+        {
+            return;
+        }
+
         if (eventData.position.y <= Screen.height * .25f)
         {
             (transform as RectTransform).anchoredPosition = lastPos;
@@ -53,6 +58,8 @@ public class CardUI : Instancable<CardUI>, IDragHandler, IBeginDragHandler, IEnd
         {
             (transform as RectTransform).anchoredPosition = lastPos;
             cardElements.SetActive(true);
+            MatchManager.Instance.myPlayer.UseManaOnServer(card.mana);
+
         }
     }
 
@@ -61,5 +68,12 @@ public class CardUI : Instancable<CardUI>, IDragHandler, IBeginDragHandler, IEnd
         DrawManager.Instance.AddCardToDrawPile(card);
         HandUI.Instance.RemoveCard(card);
         Destroy(this.gameObject);
+    }
+
+    public void CantPlayMinion()
+    {
+        (transform as RectTransform).anchoredPosition = lastPos;
+        cardElements.SetActive(true);
+        MinionSpawner.Instance.DeselectMinion();
     }
 }

@@ -27,7 +27,7 @@ public class DrawManager : Instancable<DrawManager>
         print("creating test cards...");
         for (int i = 0; i < 15; i++)
         {
-            var card = new Card(MinionType.Volva, 5);
+            var card = new Card(MinionType.Volva, 3);
             cardsInDrawPile.Add(card);
         }
     }

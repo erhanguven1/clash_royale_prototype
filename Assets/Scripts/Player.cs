@@ -2,11 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System;
 
 public class Player : NetworkBehaviour
 {
     [SerializeField] internal int id;
-    [SerializeField] private int mana;
+    [SerializeField] [SyncVar(hook = nameof(OnReceiveMana))] private int mana;
+
+    private void OnReceiveMana(int _old, int _new)
+    {
+        if (hasAuthority)
+        {
+            ManaBar.Instance.UpdateValue(_new);
+
+        }
+    }
 
     public int cardsInHandCount;
     public int cardsInDrawPileCount;
@@ -15,15 +25,19 @@ public class Player : NetworkBehaviour
     {
         return mana;
     }
-    public void SetMana(int _mana)
+
+    [Command(requiresAuthority = false)]
+    public void UseManaOnServer(int cardMana)
     {
-        mana = _mana;
+        mana -= cardMana;
+        mana = Mathf.Clamp(mana, 0, 10);
     }
 
     [Server]
     public void SetID(int _id)
     {
         id = _id;
+        mana = 0;
         SetIDOnClients(id);
         StartCoroutine(Timer());
     }
@@ -59,8 +73,10 @@ public class Player : NetworkBehaviour
         while (true)
         {
             mana += 1;
+            mana = Mathf.Clamp(mana, 0, 10);
             yield return new WaitForSeconds(1);
             mana += 1;
+            mana = Mathf.Clamp(mana, 0, 10);
             yield return new WaitForSeconds(1);
             TryDrawCard();
         }

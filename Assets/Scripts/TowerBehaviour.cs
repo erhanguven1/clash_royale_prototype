@@ -3,35 +3,40 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Mirror;
 
-public class TowerBehaviour : MonoBehaviour
+public class TowerBehaviour : NetworkBehaviour
 {
     private float attackCountdown = 2;
     [SerializeField] internal int attackInterval;
     [SerializeField] internal bool isAttacking;
-    [SerializeField] internal AttackTarget attackTarget;
-    // internal virtual void AttackMinion(Minion attackTo) { }
     [SerializeField] internal List<Minion> targetMinions = new List<Minion>();
     [SerializeField] Minion targetMinion;
     private int damage = 70;
-    
-    
+
+    [SerializeField] private DefenseTower defenseTower;
+
     void AttackMinion(Minion attackTo)
     {
         print("attacked");
         attackTo.TakeDamage(damage);
     }
-    
-    
+
+
     private void OnTriggerEnter(Collider other)
     {
+        if (isClient)
+        {
+            return;
+        }
+
         var otherMinion = other.GetComponent<Minion>();
 
         if (otherMinion != null)
         {
             print("Tower encountered with minion!");
 
-            // if (otherMinion.IsEnemyWith(this))
+            if (IsEnemyWith(otherMinion))
             {
                 targetMinions.Add(otherMinion);
                 ChooseTargetMinion();
@@ -39,9 +44,6 @@ public class TowerBehaviour : MonoBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
-                    // animationController.StartAttacking();
-
-                    attackTarget = AttackTarget.Minion;
                 }
             }
 
@@ -57,8 +59,6 @@ public class TowerBehaviour : MonoBehaviour
         if (targetMinions.Count == 0)
         {
             isAttacking = false;
-            // animationController.StartWalking();
-
         }
         else
         {
@@ -88,8 +88,23 @@ public class TowerBehaviour : MonoBehaviour
             }
         }
     }
+
+    public bool IsEnemyWith(Minion minion)
+    {
+        if (minion == null || defenseTower == null)
+        {
+            return false;
+        }
+
+        return minion.owner != defenseTower.owner;
+    }
     private void Update()
     {
+        if (isClient)
+        {
+            return;
+        }
+
         if (isAttacking)
         {
             attackCountdown -= Time.deltaTime;
@@ -97,20 +112,17 @@ public class TowerBehaviour : MonoBehaviour
             if (attackCountdown <= 0)
             {
                 attackCountdown = attackInterval;
-                if (attackTarget == AttackTarget.Minion)
+
+                if (targetMinion.minionStats.health < damage)
                 {
-                    if (targetMinion.minionStats.health < damage)
-                    {
-                        AttackMinion(targetMinion);
-                        targetMinion = null;
-                        isAttacking = false;
-                        targetMinions.RemoveAt(0);
-                        ChooseTargetMinion();
-                    }
-                    else
-                    {
-                        AttackMinion(targetMinion);
-                    }
+                    AttackMinion(targetMinion);
+                    targetMinions.Remove(targetMinion);
+                    isAttacking = false;
+                    ChooseTargetMinion();
+                }
+                else
+                {
+                    AttackMinion(targetMinion);
                 }
             }
         }

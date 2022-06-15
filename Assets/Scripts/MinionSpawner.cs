@@ -31,10 +31,18 @@ public class MinionSpawner : Instancable<MinionSpawner>
 
                 if (Input.GetMouseButtonUp(0))
                 {
-                    //Tell the server to spawn a minion for me
-                    MatchManager.Instance.RequestSpawnMinion(MatchManager.Instance.myPlayer.id, selectedMinionType, GetPointOnLane(hit.point.z, hit.collider.transform.position));
-                    selectedCard.OnMinionSpawned();
-                    DeselectMinion();
+                    if (MatchManager.Instance.myPlayer.GetMana() - selectedCard.card.mana > 0)
+                    {
+                        //Tell the server to spawn a minion for me
+                        MatchManager.Instance.RequestSpawnMinion(MatchManager.Instance.myPlayer.id, selectedMinionType, GetPointOnLane(hit.point.z, hit.collider.transform.position));
+                        selectedCard.OnMinionSpawned();
+                        DeselectMinion();
+                    }
+                    else
+                    {
+                        selectedCard.CantPlayMinion();
+                        DeselectMinion();
+                    }
                 }
             }
             else if (Input.GetMouseButtonUp(0))

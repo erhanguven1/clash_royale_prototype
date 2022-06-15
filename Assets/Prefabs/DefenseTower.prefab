@@ -100,8 +100,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackInterval: 2
   isAttacking: 0
-  attackTarget: 0
+  targetMinions: []
   targetMinion: {fileID: 0}
+  defenseTower: {fileID: 4519537120983509928}
 --- !u!1 &6834186715086848248
 GameObject:
   m_ObjectHideFlags: 0
