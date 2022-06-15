@@ -100,6 +100,20 @@ public class Minion : NetworkBehaviour
                 animationController.StartWalking();
                 ChooseTargetMinion();
             }
+
+            if (targetMinions.Count <= 0 || targetMinion == null)
+            {
+                if (targetTower)
+                {
+                    if (!isAttacking)
+                    {
+                        isAttacking = true;
+                        animationController.StartAttacking();
+
+                        attackTarget = AttackTarget.Tower;
+                    }
+                }
+            }
         }
     }
 
