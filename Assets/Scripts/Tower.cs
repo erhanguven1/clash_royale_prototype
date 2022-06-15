@@ -11,7 +11,7 @@ public class Tower : MonoBehaviour
     [SerializeField] internal bool isAttacking;
     [SerializeField] internal AttackTarget attackTarget;
     // internal virtual void AttackMinion(Minion attackTo) { }
-    internal List<Minion> targetMinions = new List<Minion>();
+    [SerializeField] internal List<Minion> targetMinions = new List<Minion>();
     [SerializeField] Minion targetMinion;
     private int damage = 70;
     
@@ -75,7 +75,19 @@ public class Tower : MonoBehaviour
             targetMinion = orderedTargets.First();
         }
     }
+    public void AnotherMinionDead(Minion minion)
+    {
+        if (targetMinions.Contains(minion))
+        {
+            targetMinions.Remove(minion);
 
+            if (targetMinion == minion)
+            {
+                isAttacking = false;
+                ChooseTargetMinion();
+            }
+        }
+    }
     private void Update()
     {
         if (isAttacking)
@@ -87,7 +99,18 @@ public class Tower : MonoBehaviour
                 attackCountdown = attackInterval;
                 if (attackTarget == AttackTarget.Minion)
                 {
-                    AttackMinion(targetMinion);
+                    if (targetMinion.minionStats.health < damage)
+                    {
+                        AttackMinion(targetMinion);
+                        targetMinion = null;
+                        isAttacking = false;
+                        targetMinions.Clear();
+                        ChooseTargetMinion();
+                    }
+                    else
+                    {
+                        AttackMinion(targetMinion);
+                    }
                 }
             }
         }

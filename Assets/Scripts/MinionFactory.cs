@@ -29,7 +29,7 @@ public class MinionFactory : Instancable<MinionFactory>
     {
         print(gameObject.name);
         //Create test minions
-        var m = new MinionData { minionType = MinionType.Volva, damage = 40, health = 100, attackInterval = 2 };
+        var m = new MinionData { minionType = MinionType.Volva, damage = 10, health = 100, attackInterval = 2 };
         Init(m);
     }
 
