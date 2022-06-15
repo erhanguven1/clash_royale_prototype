@@ -76,9 +76,8 @@ public class MinionFactory : Instancable<MinionFactory>
         
         //Spawn minion's graphic inside of the minion (parent)
         var minionGraphic = Instantiate(graphic, minion.transform).transform.GetChild(0);
-        minionGraphic.AddComponent<MinionAnimationController>();
-        minionGraphic.GetComponent<MinionAnimationController>().animator = minionGraphic.GetComponent<Animator>();
-        minionComponent.animationController = minionGraphic.GetComponent<MinionAnimationController>();
+        minionComponent.GetComponent<MinionAnimationController>().animator = minionGraphic.GetComponent<Animator>();
+        minionComponent.animationController = minionComponent.GetComponent<MinionAnimationController>();
         minionGraphic.transform.eulerAngles = new Vector3(0, owner * 180, 0);
 
         minionComponent.SetMinionData(minionDictionary[minionType]);
@@ -100,7 +99,7 @@ public class MinionFactory : Instancable<MinionFactory>
         var minion = networkIdentity.gameObject;
 
         //Spawn minion's graphic inside of the minion (parent)
-        Instantiate(graphic, minion.transform);
+        var minionGraphic = Instantiate(graphic, minion.transform).transform.GetChild(0);
 
         Minion minionComponent = null;
 
@@ -115,6 +114,9 @@ public class MinionFactory : Instancable<MinionFactory>
             default:
                 break;
         }
+
+        minionComponent.GetComponent<MinionAnimationController>().animator = minionGraphic.GetComponent<Animator>();
+        minionComponent.animationController = minionComponent.GetComponent<MinionAnimationController>();
 
         minionComponent.SetMinionData(minionDictionary[minionType]);
         minionComponent.owner = owner;

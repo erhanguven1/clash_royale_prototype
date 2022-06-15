@@ -118,6 +118,7 @@ public abstract class Minion : NetworkBehaviour
     {
         if (targetTower == tower)
         {
+            targetTower = null;
             isAttacking = false;
             animationController.StartWalking();
             ChooseTargetMinion();
@@ -176,6 +177,8 @@ public abstract class Minion : NetworkBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
+                    animationController.StartAttacking();
+
                     attackTarget = AttackTarget.Tower;
                 }
             }
