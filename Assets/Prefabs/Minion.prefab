@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7708090375736536039}
   - component: {fileID: 7708090375736536036}
   - component: {fileID: 3314809497863865287}
+  - component: {fileID: 2008203004392180034}
   m_Layer: 0
   m_Name: Minion
   m_TagString: Untagged
@@ -83,3 +84,18 @@ MonoBehaviour:
   syncInterval: 0.1
   networkPosition: {x: 0, y: 0, z: 0}
   networkRotation: {x: 0, y: 0, z: 0}
+--- !u!114 &2008203004392180034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7708090375736536041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6cd62ee96d3de4eafe92ac07e6fb91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  animator: {fileID: 0}

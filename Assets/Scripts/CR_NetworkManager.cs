@@ -23,6 +23,8 @@ public class CR_NetworkManager : NetworkManager
 
         if (NetworkServer.connections.Count == 2)
         {
+            TimeManager.Instance.StartTicking();
+
             mm = Instantiate(spawnPrefabs[0]).GetComponent<MatchManager>();
             NetworkServer.Spawn(mm.gameObject);
 
