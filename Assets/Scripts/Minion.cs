@@ -6,45 +6,14 @@ using System;
 using UnityEngine.Events;
 using Mirror;
 
-[System.Serializable]
-public class MinionStats
-{
-    [SerializeField] MinionType minionType;
-    [SerializeField] internal int health;
-
-    public UnityAction onDead;
-    public void SetHealth(int _health) { health = _health; }
-    public void DecreaseHealth(int _health)
-    {
-        if (health - _health <= 0)
-        {
-            onDead();
-        }
-        health -= _health;
-    }
-
-    [SerializeField] internal int damage;
-    public void SetDamage(int _dmg) { damage = _dmg; }
-    public void DecreaseDamage(int _dmg) { damage -= _dmg; }
-
-    [SerializeField] internal int attackInterval;
-
-    internal MinionStats(MinionData minionData)
-    {
-        this.minionType = minionData.minionType;
-        this.health = minionData.health;
-        this.damage = minionData.damage;
-        this.attackInterval = minionData.attackInterval;
-    }
-}
-
 public enum AttackTarget { Minion, Tower }
 
-public abstract class Minion : NetworkBehaviour
+public class Minion : NetworkBehaviour
 {
+    [SerializeField] internal int attackInterval;
+
     [SerializeField] internal int owner;
 
-    [SerializeField] internal MinionStats minionStats;
     [SerializeField] internal MinionAnimationController animationController;
 
     private float attackCountdown;
@@ -55,19 +24,38 @@ public abstract class Minion : NetworkBehaviour
     [SerializeField] Minion targetMinion;
     [SerializeField] DefenseTower targetTower;
 
+    public MinionStats minionStats;
+
     private void Start()
     {
         if (GetComponent<NetworkIdentity>().isClient)
         {
             Destroy(GetComponent<Rigidbody>());
-            transform.GetChild(0).eulerAngles = new Vector3(0, owner * 180, 0);
+
+            transform.GetChild(1).eulerAngles = new Vector3(0, owner * 180, 0);
+
+            /*if (MatchManager.Instance.myPlayer.id == 0)
+            {
+                transform.GetChild(1).eulerAngles = new Vector3(0, owner * 180, 0);
+            }
+            else
+            {
+                transform.GetChild(1).eulerAngles = new Vector3(0, ((owner + 1) % 2) * 180, 0);
+            }*/
         }
+
+        minionStats.healthUI = transform.GetChild(0).GetChild(0).GetComponent<HealthUI>();
     }
 
     public void SetMinionData(MinionData _minionData)
     {
-        minionStats = new MinionStats(_minionData);
-        attackCountdown = minionStats.attackInterval;
+        minionStats = GetComponent<MinionStats>();
+
+        attackInterval = _minionData.attackInterval;
+        attackCountdown = _minionData.attackInterval;
+        minionStats.minionType = _minionData.minionType;
+        minionStats.health = _minionData.health;
+        minionStats.damage = _minionData.damage;
 
         minionStats.onDead += OnDead;
 
@@ -125,8 +113,8 @@ public abstract class Minion : NetworkBehaviour
         }
     }
 
-    internal abstract void AttackMinion(Minion attackTo);
-    internal abstract void AttackTower(DefenseTower attackTo);
+    internal virtual void AttackMinion(Minion attackTo) { }
+    internal virtual void AttackTower(DefenseTower attackTo) { }
 
     [Server]
     public void TakeDamage(int dmg)
@@ -264,7 +252,7 @@ public abstract class Minion : NetworkBehaviour
 
             if (attackCountdown <= 0)
             {
-                attackCountdown = minionStats.attackInterval;
+                attackCountdown = attackInterval;
                 if (attackTarget == AttackTarget.Minion)
                 {
                     AttackMinion(targetMinion);

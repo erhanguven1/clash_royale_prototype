@@ -25,7 +25,6 @@ public class MinionTransformSYNC : NetworkBehaviour
         if (isClient)
         {
             transform.position = networkPosition;
-            transform.eulerAngles = networkRotation;
         }
     }
 
@@ -33,6 +32,5 @@ public class MinionTransformSYNC : NetworkBehaviour
     void UpdateTransformOnClient(Vector3 _pos, Vector3 _rot)
     {
         networkPosition = _pos;
-        networkRotation = _rot;
     }
 }
