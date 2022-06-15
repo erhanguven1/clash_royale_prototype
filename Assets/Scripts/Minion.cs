@@ -5,6 +5,7 @@ using System.Linq;
 using System;
 using UnityEngine.Events;
 using Mirror;
+using Unity.VisualScripting;
 
 public enum AttackTarget { Minion, Tower }
 
@@ -20,7 +21,7 @@ public class Minion : NetworkBehaviour
     [SerializeField] internal bool isAttacking;
     [SerializeField] internal AttackTarget attackTarget;
 
-    internal List<Minion> targetMinions = new List<Minion>();
+    [SerializeField] internal List<Minion> targetMinions = new List<Minion>();
     [SerializeField] Minion targetMinion;
     [SerializeField] DefenseTower targetTower;
 
@@ -230,6 +231,8 @@ public class Minion : NetworkBehaviour
             var orderedTargets = targetMinions.OrderBy(x => Vector3.Distance(x.transform.position, transform.position));
 
             targetMinion = orderedTargets.First();
+            isAttacking = true;
+            animationController.StartAttacking();
         }
     }
 
