@@ -11,11 +11,11 @@ public class MinionAnimationController : NetworkBehaviour
     public void StartWalking()
     {
         animator.SetTrigger("Walk");
-        StartWalkingRPC();
+        // StartWalkingRPC();
     }
 
     [ClientRpc]
-    private void StartWalkingRPC()
+    private void StartWalkingRPC() //Doesn't work properly. Network Team Should Look At This.
     {
         animator.SetTrigger("Walk");
     }
@@ -24,7 +24,7 @@ public class MinionAnimationController : NetworkBehaviour
     public void StartAttacking()
     {
         animator.SetTrigger("Attack");
-        StartWalkingRPC();
+        // StartWalkingRPC();
     }
 
     [ClientRpc]
