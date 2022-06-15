@@ -6,6 +6,7 @@ using Mirror;
 public class MinionManager : InstancableNB<MinionManager>
 {
     private List<Minion> minions = new List<Minion>();
+    public List<Minion> GetMinions() { return minions; }
 
     public void AddMinion(Minion minion)
     {

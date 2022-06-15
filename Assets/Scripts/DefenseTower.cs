@@ -17,7 +17,7 @@ public class DefenseTower : NetworkBehaviour
         if (health <= 0)
         {
             health = 0;
-            gameObject.SetActive(false);
+            TowerManager.Instance.OnTowerDestroyed(this);
             Destroy(gameObject, .1f);
         }
     }

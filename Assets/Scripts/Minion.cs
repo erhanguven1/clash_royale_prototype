@@ -114,6 +114,16 @@ public abstract class Minion : NetworkBehaviour
         }
     }
 
+    public void AnotherTowerDestroyed(DefenseTower tower)
+    {
+        if (targetTower == tower)
+        {
+            isAttacking = false;
+            animationController.StartWalking();
+            ChooseTargetMinion();
+        }
+    }
+
     internal abstract void AttackMinion(Minion attackTo);
     internal abstract void AttackTower(DefenseTower attackTo);
 
