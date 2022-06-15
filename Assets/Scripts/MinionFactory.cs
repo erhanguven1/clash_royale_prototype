@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using Unity.VisualScripting;
 
 public enum MinionType { Volva, Berserker }
 
@@ -26,6 +27,7 @@ public class MinionFactory : Instancable<MinionFactory>
 
     private void Start()
     {
+        print(gameObject.name);
         //Create test minions
         var m = new MinionData { minionType = MinionType.Volva, damage = 40, health = 100, attackInterval = 2 };
         Init(m);
@@ -52,7 +54,7 @@ public class MinionFactory : Instancable<MinionFactory>
         //Spawn minion parent
         var minion = Instantiate(NetworkManager.singleton.spawnPrefabs[1]);
 
-        minion.name = minionType.ToString();
+        minion.name = minionType.ToString(); 
 
         minion.transform.position = spawnPosition;
 
@@ -69,9 +71,13 @@ public class MinionFactory : Instancable<MinionFactory>
             default:
                 break;
         }
-
+        // minion.AddComponent<MinionAnimationController>();
+        // minion.GetComponent<Volva>().animationController = minion.GetComponent<MinionAnimationController>();
+        
         //Spawn minion's graphic inside of the minion (parent)
         var minionGraphic = Instantiate(graphic, minion.transform).transform.GetChild(0);
+        minionGraphic.AddComponent<MinionAnimationController>();
+        minionGraphic.GetComponent<MinionAnimationController>().animator = minionGraphic.GetComponent<Animator>();
         minionComponent.animationController = minionGraphic.GetComponent<MinionAnimationController>();
         minionGraphic.transform.eulerAngles = new Vector3(0, owner * 180, 0);
 
